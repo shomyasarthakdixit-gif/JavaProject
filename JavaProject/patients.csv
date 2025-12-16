@@ -1,5 +1,4 @@
-id,name,age,days,ward,admitted
-101,Rahul,30,5,GENERAL,true
-102,Anita,45,3,ICU,false
-103,Rohan,40,4,PRIVATE,true
-104,Chaitanya,365,3,PRIVATE,false
+id,name,age,days,ward,room,admitted
+101,Rahul,30,5,GENERAL,12,TRUE
+102,Anita,45,3,ICU,5,TRUE
+103,Rohan,40,4,PRIVATE,20,TRUE

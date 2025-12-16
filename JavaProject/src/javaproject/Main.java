@@ -4,7 +4,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    		throws RoomOccupiedException, BedUnavailableException {
 
         // 🔹 Load rates from config file
         Map<Ward, Double> rates = RateConfigLoader.loadRates("rates.cfg");
@@ -28,26 +29,38 @@ public class Main {
             try {
                 switch (ch) {
                 case 1 -> {
-                    System.out.print("Enter ID: ");
-                    int id = sc.nextInt();
+                    try {
+                        System.out.print("Enter ID: ");
+                        int id = sc.nextInt();
 
-                    System.out.print("Enter Name: ");
-                    String name = sc.next();
+                        System.out.print("Enter Name: ");
+                        String name = sc.next();
 
-                    System.out.print("Enter Age: ");
-                    int age = sc.nextInt();
+                        System.out.print("Enter Age: ");
+                        int age = sc.nextInt();
 
-                    System.out.print("Enter Number of Days: ");
-                    int days = sc.nextInt();
+                        System.out.print("Enter Number of Days: ");
+                        int days = sc.nextInt();
 
-                    System.out.println("Select Ward:");
-                    System.out.println("GENERAL | ICU | EMERGENCY | PRIVATE");
-                    System.out.print("Enter Ward: ");
+                        System.out.println("Select Ward: GENERAL | ICU | EMERGENCY | PRIVATE");
+                        Ward ward = Ward.valueOf(sc.next().toUpperCase());
 
-                    Ward ward = Ward.valueOf(sc.next().toUpperCase());
+                        System.out.print("Enter Room Number: ");
+                        int room = sc.nextInt();
 
-                    manager.admit(new Patient(id, name, age, days, ward));
+                        Patient patient = new Patient(id, name, age, days, ward, room);
+
+                        manager.admit(patient);
+
+                    } catch (RoomOccupiedException e) {
+                        System.out.println("❌ Admission Failed: " + e.getMessage());
+                    } catch (BedUnavailableException e) {
+                        System.out.println("❌ No beds available.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("❌ Invalid ward entered.");
+                    }
                 }
+
 
                     case 2 -> {
                         System.out.print("Enter Patient ID: ");
