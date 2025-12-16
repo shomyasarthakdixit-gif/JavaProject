@@ -15,6 +15,7 @@ public class Main {
             rates.put(Ward.GENERAL, 1000.0);
             rates.put(Ward.ICU, 5000.0);
             rates.put(Ward.EMERGENCY, 3000.0);
+            rates.put(Ward.PRIVATE, 8000.0);
         }
 
         HospitalManager manager =
