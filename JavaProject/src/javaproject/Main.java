@@ -27,17 +27,28 @@ public class Main {
 
             try {
                 switch (ch) {
-                    case 1 -> {
-                        System.out.println("\nID \nName \nAge \nDays \nWard: ");
-                        manager.admit(new Patient(
-                                sc.nextInt(),
-                                sc.next(),
-                                sc.nextInt(),
-                                sc.nextInt(),
-                                Ward.valueOf(sc.next().toUpperCase())
-                        ));
-                        System.out.println("Patient Admitted Successfully!!");
-                    }
+                case 1 -> {
+                    System.out.print("Enter ID: ");
+                    int id = sc.nextInt();
+
+                    System.out.print("Enter Name: ");
+                    String name = sc.next();
+
+                    System.out.print("Enter Age: ");
+                    int age = sc.nextInt();
+
+                    System.out.print("Enter Number of Days: ");
+                    int days = sc.nextInt();
+
+                    System.out.println("Select Ward:");
+                    System.out.println("GENERAL | ICU | EMERGENCY | PRIVATE");
+                    System.out.print("Enter Ward: ");
+
+                    Ward ward = Ward.valueOf(sc.next().toUpperCase());
+
+                    manager.admit(new Patient(id, name, age, days, ward));
+                }
+
                     case 2 -> {
                         System.out.print("Enter Patient ID: ");
                         manager.discharge(sc.nextInt());

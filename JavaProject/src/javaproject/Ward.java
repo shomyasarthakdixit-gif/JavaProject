@@ -1,5 +1,8 @@
 package javaproject;
 
 public enum Ward {
-    GENERAL, ICU, EMERGENCY
+    GENERAL,
+    ICU,
+    EMERGENCY,
+    PRIVATE
 }

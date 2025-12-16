@@ -29,8 +29,6 @@ public class HospitalManager implements BedObserver {
 
         File file = new File(fileName);
 
-        System.out.println("📁 Looking for CSV at: " + file.getAbsolutePath());
-
         if (!file.exists()) {
             System.out.println("⚠ patients.csv not found. Starting empty.");
             return;
@@ -38,7 +36,7 @@ public class HospitalManager implements BedObserver {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
-            String line = br.readLine(); // skip header
+            String line = br.readLine(); // header
 
             while ((line = br.readLine()) != null) {
 
@@ -53,6 +51,10 @@ public class HospitalManager implements BedObserver {
                         Integer.parseInt(clean(d[3])),
                         Ward.valueOf(clean(d[4]))
                 );
+
+                if (d.length == 6 && clean(d[5]).equalsIgnoreCase("false")) {
+                    p.discharge();
+                }
 
                 admit(p);
             }
@@ -74,11 +76,7 @@ public class HospitalManager implements BedObserver {
     public void discharge(int id) throws InvalidPatientStateException {
 
         for (List<Patient> list : wardMap.values()) {
-
-            Iterator<Patient> iterator = list.iterator();
-
-            while (iterator.hasNext()) {
-                Patient p = iterator.next();
+            for (Patient p : list) {
 
                 if (p.getId() == id) {
 
@@ -86,19 +84,19 @@ public class HospitalManager implements BedObserver {
                         throw new InvalidPatientStateException("Patient already discharged");
                     }
 
-                    // 1️⃣ Generate bill
-                    generateBill(p);
+                    // 1️⃣ Mark patient as discharged
+                    p.discharge();
 
-                    // 2️⃣ Free bed
+                    // 2️⃣ Release bed
                     bedManager.releaseBed();
 
-                    // 3️⃣ Remove patient from memory
-                    iterator.remove();
+                    // 3️⃣ Generate bill
+                    generateBill(p);
 
-                    // 4️⃣ Save updated list to CSV
+                    // 4️⃣ Save updated records to CSV
                     savePatientsToCSV("patients.csv");
 
-                    System.out.println("✅ Patient discharged and removed from CSV");
+                    System.out.println("✅ Patient discharged (record retained)");
                     return;
                 }
             }
@@ -106,7 +104,6 @@ public class HospitalManager implements BedObserver {
 
         throw new InvalidPatientStateException("Patient not found");
     }
-
 
     public void listPatients() {
         wardMap.values().forEach(list -> list.forEach(System.out::println));
@@ -137,7 +134,7 @@ public class HospitalManager implements BedObserver {
 
         try (PrintWriter pw = new PrintWriter(new FileWriter(fileName))) {
 
-            pw.println("id,name,age,days,ward");
+            pw.println("id,name,age,days,ward,admitted");
 
             for (List<Patient> list : wardMap.values()) {
                 for (Patient p : list) {
@@ -147,15 +144,19 @@ public class HospitalManager implements BedObserver {
                             p.name + "," +
                             p.age + "," +
                             p.getDays() + "," +
-                            p.getWard()
+                            p.getWard() + "," +
+                            p.isAdmitted()
                     );
                 }
             }
 
         } catch (IOException e) {
-            System.out.println("❌ Error saving CSV: " + e.getMessage());
+            System.out.println("❌ CSV Save Error: " + e.getMessage());
         }
     }
+    
+//Bill
+    
     private void generateBill(Patient patient) {
 
         double amount = billingService.calculateBill(patient);

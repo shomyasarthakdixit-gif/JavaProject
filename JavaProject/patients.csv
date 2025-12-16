@@ -1,3 +1,5 @@
-id,name,age,days,ward
-101,Rahul,30,5,GENERAL
-103,Amit,60,7,EMERGENCY
+id,name,age,days,ward,admitted
+101,Rahul,30,5,GENERAL,true
+102,Anita,45,3,ICU,false
+103,Rohan,40,4,PRIVATE,true
+104,Chaitanya,365,3,PRIVATE,false

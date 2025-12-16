@@ -27,4 +27,6 @@ public class Patient extends Person {
     public String toString() {
         return id + " | " + name + " | " + age + " | " + ward + " | Days: " + days;
     }
+    
+
 }
